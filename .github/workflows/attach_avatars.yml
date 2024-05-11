@@ -35,8 +35,9 @@ jobs:
         run: |
           for model_file in $(ls -1 | grep 'avatar_')
           do
-            cd ~/${model_file}
+            cd ./${model_file}
             zip -r ../out/$(echo ${model_file} | sed 's/avatar_//').zip ./
+            cd ../
           done
       - name: Attach artifacts to release assets
         run: |
