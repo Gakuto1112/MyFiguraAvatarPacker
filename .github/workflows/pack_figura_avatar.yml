@@ -1,0 +1,61 @@
+name: Pack my Figura avatar
+
+on:
+  workflow_call:
+    inputs:
+      target_branch:
+        description: The name of the branch to make an avatar package
+        type: string
+        required: true
+
+jobs:
+  pack_figura_avatar:
+    name: Pack my Figura avatar
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.4
+        with:
+          ref: ${{ inputs.target_branch }}
+      - name: Prepare output directory
+        run: |
+          mkdir ./out
+          mkdir ./out/${AVATAR_NAME}
+          mkdir ./out/${AVATAR_NAME}/models
+        env:
+          AVATAR_NAME: ${{ inputs.target_branch }}
+      - name: Remove reference images from model files
+        run: |
+          for model_file in $(ls -1 ./models | grep '.bbmodel')
+          do
+            cat ./models/${model_file} | jq 'del(.reference_images)' > ./out/${AVATAR_NAME}/models/${model_file}
+          done
+        env:
+          AVATAR_NAME: ${{ inputs.target_branch }}
+      - name: Move necessary files
+        run: |
+          mv -r ./scripts ./out/${AVATAR_NAME}/scripts
+          mv -r ./textures ./out/${AVATAR_NAME}/textures
+          mv ./avatar.json ./out/${AVATAR_NAME}/avatar.json
+          mv ./avatar.png ./out/${AVATAR_NAME}/avatar.png
+          if [ -e ./LICENSE ]; then
+            mv ./LICENSE ./out/LICENSE
+          fi
+        env:
+          AVATAR_NAME: ${{ inputs.target_branch }}
+      - name: Create README.txt
+        run: |
+          cat << EOF > ./out/README.txt
+          Please read README at the link below for instructions and notes for the avatar.
+          https://github.com/${REPOSITORY}/blob/base/.github/README.md
+
+          アバターの使用方法や注意事項などは下記のリンクのREADMEをお読みください。
+          https://github.com/${REPOSITORY}/blob/base/.github/README_jp.md
+          EOF
+        env:
+          REPOSITORY: ${{ github.repository }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: avatar_${{ inputs.target_branch }}
+          path: ./out
