@@ -1,0 +1,51 @@
+name: Attach avatars to release assets
+
+on:
+  workflow_call:
+    inputs:
+      target_branches:
+        description: The array of branch names to make an avatar package and attach it to release assets
+        type: string
+        required: true
+
+jobs:
+  pack_figura_avatar:
+    name: Pack my Figura avatars
+    strategy:
+      matrix:
+        target_branch: ${{ fromJSON(inputs.target_branches) }}
+    uses: ./.github/workflows/pack_figura_avatar.yml
+    with:
+      target_branch: ${{ matrix.target_branch }}
+  attach_avatar:
+    name: Attach avatars to release assets
+    needs: pack_figura_avatar
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4.1.7
+        with:
+          path: ./
+          pattern: avatar_*
+      - name: Prepare output directory
+        run: mkdir ./out
+      - name: Zip artifacts
+        run: |
+          for model_file in $(ls -1 | grep 'avatar_')
+          do
+            cd ~/${model_file}
+            zip -r ../out/$(echo ${model_file} | sed 's/avatar_//').zip ./
+          done
+      - name: Attach artifacts to release assets
+        run: |
+          for zip_file in $(ls -1)
+          do
+            gh release upload ${TAG_NAME} ./${zip_file} --repo ${REPOSITORY}
+          done
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_NAME: ${{ github.event.release.tag_name }}
+          REPOSITORY: ${{ github.repository }}
+        working-directory: ./out
