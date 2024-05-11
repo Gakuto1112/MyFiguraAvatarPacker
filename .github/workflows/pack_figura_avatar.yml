@@ -34,8 +34,8 @@ jobs:
           AVATAR_NAME: ${{ inputs.target_branch }}
       - name: Move necessary files
         run: |
-          mv -r ./scripts ./out/${AVATAR_NAME}/scripts
-          mv -r ./textures ./out/${AVATAR_NAME}/textures
+          mv ./scripts ./out/${AVATAR_NAME}/scripts
+          mv ./textures ./out/${AVATAR_NAME}/textures
           mv ./avatar.json ./out/${AVATAR_NAME}/avatar.json
           mv ./avatar.png ./out/${AVATAR_NAME}/avatar.png
           if [ -e ./LICENSE ]; then
