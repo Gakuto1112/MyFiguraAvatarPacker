@@ -1,12 +1,17 @@
-# MyPublicRepositoryTemplate
-私（[Gakuto1112](https://github.com/Gakuto1112)）のパブリックレポジトリ向けのテンプレートレポジトリです。
+# MyFiguraAvatarPacker
+私（[Gakuto1112](https://github.com/Gakuto1112)）が作成する[Figura](https://modrinth.com/mod/figura)アバターを配布しやすい形式に加工するワークフローです。
 
-このレポジトリには、プルリクエストに関するワークフローが含まれています。
-これらのワークフローについては以下のレポジトリをご覧ください。
+このレポジトリには以下のワークフローが利用可能です。
 
-[Gakuto1112/PublicPullRequestWorkflows](https://github.com/Gakuto1112/PublicPullRequestWorkflows)
+- レポジトリにあるアバターを配布しやすい形式に加工し、アーティファクトとしてアップロードする。
+- リリースが作成された際にアバターの加工を行い、リリースアセットにアバターデータを追加する。
 
-コラボレーター以外からのプルリクエストにおいて、ワークフローが自動実行されるようにレポジトリの設定を変更してください。
-レポジトリ設定 → 「Actions」 → 「General」 → 「Fork pull request workflows from outside collaborators」に進み、「Require approval for first-time contributors who are new to GitHub」を選択してください。
+ワークフローで行われる加工では、以下のことが行われます。
 
-このREADMEの内容を削除して新たなレポジトリ向けの文章を書いてください。なお、文書のタイトル（「*# MyPublicRepositoryTemplate*」の部分）はレポジトリ名にしてください。
+- アバターを使用する上で不要なデータ（`.github/`など）を削除する。
+  - `LICENSE`は含まれます。
+- レポジトリ上にあるREADMEを読むことを促す、簡易的な`README.txt`を生成する。
+- モデルファイル上にある参照画像（アバターを使用する上では一切必要ない）を削除し、配布ファイルのサイズを減らす。
+
+これらの加工は非破壊的であるため、レポジトリにあるアバターのデータが上書きされることはありません。
+ご安心ください。
