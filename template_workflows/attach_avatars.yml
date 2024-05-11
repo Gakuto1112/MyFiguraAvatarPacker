@@ -9,9 +9,8 @@ on:
 jobs:
   attach_avatar:
     name: Attach avatars to release assets
-    needs: get_target_branches
     permissions:
       contents: write
     uses: Gakuto1112/MyFiguraAvatarPacker/.github/workflows/attach_avatars.yml@main
     with:
-      target_branches: ${{ needs.get_target_branches.outputs.target_branches }}
+      target_branches: '["<branch_1_name>"]' # ここにリリースアセットに添付するアバターがあるブランチの名前を入力する。
