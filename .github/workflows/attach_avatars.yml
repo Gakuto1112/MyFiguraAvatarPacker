@@ -11,7 +11,7 @@ on:
         description: The JSON key-value object with corresponding branch name and avatar name. Keys are branch names and Values are avatar names.
         type: string
         required: false
-        default: '{}'
+        default: '[]'
       includes:
         description: The JSON array of including files/directories
         type: string
