@@ -78,6 +78,20 @@ https://github.com/Gakuto1112/FiguraBlueArchiveCharacters/releases/tag/v1.8.6
 
 加工する対象のアバターがあるブランチの名前
 
+##### avatar_name
+任意、string
+
+加工する対象のアバターの名前。
+これを指定することにより、アバター名を上書きできます。
+省略するとアバター名はブランチ名と同じになります。
+
+##### includes
+任意、string
+
+必須ファイル/ディレクトリ以外にアバターに含めたいファイル/ディレクトリをJSON配列で指定します。
+
+（例）：`["sounds", "avatar_2.png"]`
+
 ### attach_avatars.yml
 リリースが作成された際にリリースのアセットに複数（又は単一）のアバターファイルを添付します。
 このワークフローは必ず`release`イベントでトリガーされた場合のみ呼び出してください。
@@ -90,6 +104,22 @@ https://github.com/Gakuto1112/FiguraBlueArchiveCharacters/releases/tag/v1.8.6
 リリースアセットに添付する対象のアバターがあるブランチの名前をJSON配列にしたもの
 
 （例）：`["Shiroko", "Hoshino", "Marie", "Momoi", "Midori", "Izuna", "Shizuko"]`
+
+##### avatar_names
+任意、string
+
+加工する対象のアバターの名前をJSON key-value形式で指定します。
+キーをアバターのブランチ名に、値をアバター名にします。
+省略するとアバター名はブランチ名と同じになります。
+
+（例）：`{"main": "CatMaid"}`
+
+##### includes
+任意、string
+
+必須ファイル/ディレクトリ以外にアバターに含めたいファイル/ディレクトリをJSON配列で指定します。
+
+（例）：`["sounds", "avatar_2.png"]`
 
 ### ワークフローの呼び出しについて
 これらのワークフローを自身のレポジトリで呼び出したい場合、`template_workflows/`内にあるワークフローファイルを自身のレポジトリの`.github/workflows/`に追加してください。
