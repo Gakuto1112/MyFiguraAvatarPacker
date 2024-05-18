@@ -27,7 +27,7 @@ jobs:
     uses: ./.github/workflows/pack_figura_avatar.yml
     with:
       target_branch: ${{ matrix.target_branch }}
-      avatar_name: ${{ fromJSON(format('inputs.avatar_names.{0}', matrix.target_branch)) }}
+      avatar_name: ${{ fromJSON(inputs.avatar_names)[format('{0}', matrix.target_branch)] }}
       includes: ${{ inputs.includes }}
   attach_avatar:
     name: Attach avatars to release assets
