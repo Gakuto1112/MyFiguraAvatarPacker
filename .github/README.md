@@ -46,6 +46,7 @@ https://github.com/Gakuto1112/FiguraBlueArchiveCharacters/releases/tag/v1.8.6
   ```
 
   - ここに書かれていないファイル/ディレクトリが存在していも問題はないですが、これらは無視されます。
+  ただし、ワークフロー追加の引数を指定することで追加のファイル/ディレクトリをアバターに含めることができます。
   - [こちらのテンプレート](https://github.com/Gakuto1112/FiguraAvatarTemplate)を使用すると、上記形式に従いやすくなります。
 
 ## 加工済みアバターファイルについて
@@ -64,7 +65,8 @@ https://github.com/Gakuto1112/FiguraBlueArchiveCharacters/releases/tag/v1.8.6
 
 アバターフォルダをFiguraのアバターディレクトリ（`...\.minecraft\figura\avatars\`、環境によって異なります）に入れるとゲーム内でアバターを使用できるようになります。
 
-アバターファイル及びアバターフォルダの名前は、アバターがあるブランチの名前になります。
+アバターファイル及びアバターフォルダのデフォルト名はアバターがあるブランチの名前になります。
+ワークフローに追加の引数を指定することでアバター名を上書きできます。
 
 ## ワークフローファイルについて
 `.github/workflows`に[GitHub Actions](https://github.co.jp/features/actions)ワークフローの定義ファイルがあります。
