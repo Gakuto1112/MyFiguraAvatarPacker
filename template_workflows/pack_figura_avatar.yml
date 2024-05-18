@@ -12,3 +12,5 @@ jobs:
     uses: Gakuto1112/MyFiguraAvatarPacker/.github/workflows/pack_figura_avatar.yml@main
     with:
       target_branch: ${{ github.ref }} # ここに加工するアバターがあるブランチの名前を入力する。この例では、pushイベントがトリガーされたブランチの名前が入る。
+      avatar_name: My avatar 1 # ここにアバターの名前を指定することでアバター名を上書きできる。この引数は省略できる。
+      includes: '["sounds"]' # ここにアバターデータに追加で含めたいファイル/ディレクトリ名を指摘できる。この引数は省略できる。
