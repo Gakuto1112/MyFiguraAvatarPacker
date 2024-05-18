@@ -30,14 +30,14 @@ jobs:
       - name: Output avatar name
         id: output_avatar_name
         run: |
-          if [ -z ${TEST} ]; then
+          if [ -z ${INPUT_NAME} ]; then
             echo avatar_name=${BRANCH_NAME} >> ${GITHUB_OUTPUT}
           else
             echo avatar_name=${INPUT_NAME} >> ${GITHUB_OUTPUT}
           fi
         env:
-          BRANCH_NAME: ${{ inputs.target_branch }}
           INPUT_NAME: ${{ inputs.avatar_name }}
+          BRANCH_NAME: ${{ inputs.target_branch }}
       - name: Prepare output directory
         run: |
           mkdir ./out
