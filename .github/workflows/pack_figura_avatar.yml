@@ -7,6 +7,16 @@ on:
         description: The name of the branch to make an avatar package
         type: string
         required: true
+      avatar_name:
+        description: The avatar's name. The default is the same as the branch name.
+        type: string
+        required: false
+        default: ''
+      includes:
+        description: The JSON array of including files/directories
+        type: string
+        required: false
+        default: '[]'
 
 jobs:
   pack_figura_avatar:
@@ -17,13 +27,24 @@ jobs:
         uses: actions/checkout@v4.1.4
         with:
           ref: ${{ inputs.target_branch }}
+      - name: Output avatar name
+        id: output_avatar_name
+        run: |
+          if [ -z ${TEST} ]; then
+            echo avatar_name=${BRANCH_NAME} >> ${GITHUB_OUTPUT}
+          else
+            echo avatar_name=${INPUT_NAME} >> ${GITHUB_OUTPUT}
+          fi
+        env:
+          BRANCH_NAME: ${{ inputs.target_branch }}
+          INPUT_NAME: ${{ inputs.avatar_name }}
       - name: Prepare output directory
         run: |
           mkdir ./out
           mkdir ./out/${AVATAR_NAME}
           mkdir ./out/${AVATAR_NAME}/models
         env:
-          AVATAR_NAME: ${{ inputs.target_branch }}
+          AVATAR_NAME: ${{ steps.output_avatar_name.outputs.avatar_name }}
       - name: Remove reference images from model files
         run: |
           for model_file in $(ls -1 ./models | grep '.bbmodel')
@@ -31,7 +52,7 @@ jobs:
             cat ./models/${model_file} | jq 'del(.reference_images)' > ./out/${AVATAR_NAME}/models/${model_file}
           done
         env:
-          AVATAR_NAME: ${{ inputs.target_branch }}
+          AVATAR_NAME: ${{ steps.output_avatar_name.outputs.avatar_name }}
       - name: Move necessary files
         run: |
           mv ./scripts ./out/${AVATAR_NAME}/scripts
@@ -41,8 +62,12 @@ jobs:
           if [ -e ./LICENSE ]; then
             mv ./LICENSE ./out/LICENSE
           fi
+          for path in $(echo ${INCLUDES} | jq -r '.[]'); do
+            mv ./${path} ./out/${AVATAR_NAME}/${path}
+          done
         env:
-          AVATAR_NAME: ${{ inputs.target_branch }}
+          AVATAR_NAME: ${{ steps.output_avatar_name.outputs.avatar_name }}
+          INCLUDES: ${{ inputs.includes }}
       - name: Create README.txt
         run: |
           cat << EOF > ./out/README.txt
@@ -57,5 +82,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4.3.3
         with:
-          name: avatar_${{ inputs.target_branch }}
+          name: avatar_${{ steps.output_avatar_name.outputs.avatar_name }}
           path: ./out

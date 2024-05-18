@@ -4,9 +4,19 @@ on:
   workflow_call:
     inputs:
       target_branches:
-        description: The array of branch names to make an avatar package and attach it to release assets
+        description: The JSON array of branch names to make an avatar package and attach it to release assets
         type: string
         required: true
+      avatar_names:
+        description: The JSON key-value object with corresponding branch name and avatar name. Keys are branch names and Values are avatar names.
+        type: string
+        required: false
+        default: '[]'
+      includes:
+        description: The JSON array of including files/directories
+        type: string
+        required: false
+        default: '[]'
 
 jobs:
   pack_figura_avatar:
@@ -17,6 +27,8 @@ jobs:
     uses: ./.github/workflows/pack_figura_avatar.yml
     with:
       target_branch: ${{ matrix.target_branch }}
+      avatar_name: ${{ fromJSON(inputs.avatar_names).${{ matrix.target_branch }} }}
+      includes: ${{ inputs.includes }}
   attach_avatar:
     name: Attach avatars to release assets
     needs: pack_figura_avatar
