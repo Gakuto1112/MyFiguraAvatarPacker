@@ -73,24 +73,27 @@ https://github.com/Gakuto1112/FiguraBlueArchiveCharacters/releases/tag/v1.8.6
 レポジトリにあるアバターを配布しやすい形式に加工し、それをアーティファクトとしてアップロードします。
 
 #### 実行引数
-##### target_branch
-必須、string
+- **target_branch**
 
-加工する対象のアバターがあるブランチの名前
+  必須、string
 
-##### avatar_name
-任意、string
+  加工する対象のアバターがあるブランチの名前
 
-加工する対象のアバターの名前。
-これを指定することにより、アバター名を上書きできます。
-省略するとアバター名はブランチ名と同じになります。
+- **avatar_name**
 
-##### includes
-任意、string
+  任意、string
 
-必須ファイル/ディレクトリ以外にアバターに含めたいファイル/ディレクトリをJSON配列で指定します。
+  加工する対象のアバターの名前。
+  これを指定することにより、アバター名を上書きできます。
+  省略するとアバター名はブランチ名と同じになります。
 
-（例）：`["sounds", "avatar_2.png"]`
+- **includes**
+
+  任意、string
+
+  必須ファイル/ディレクトリ以外にアバターに含めたいファイル/ディレクトリをJSON配列で指定します。
+
+  （例）：`["sounds", "avatar_2.png"]`
 
 ### attach_avatars.yml
 リリースが作成された際にリリースのアセットに複数（又は単一）のアバターファイルを添付します。
@@ -98,28 +101,31 @@ https://github.com/Gakuto1112/FiguraBlueArchiveCharacters/releases/tag/v1.8.6
 `pack_figura_avatar.yml`もこのワークフローに含まれているため、同時に実行する必要はありません。
 
 #### 実行引数
-##### target_branches
-必須、string
+- **target_branches**
 
-リリースアセットに添付する対象のアバターがあるブランチの名前をJSON配列にしたもの
+  必須、string
 
-（例）：`["Shiroko", "Hoshino", "Marie", "Momoi", "Midori", "Izuna", "Shizuko"]`
+  リリースアセットに添付する対象のアバターがあるブランチの名前をJSON配列にしたもの
 
-##### avatar_names
-任意、string
+  （例）：`["Shiroko", "Hoshino", "Marie", "Momoi", "Midori", "Izuna", "Shizuko"]`
 
-加工する対象のアバターの名前をJSON key-value形式で指定します。
-キーをアバターのブランチ名に、値をアバター名にします。
-省略するとアバター名はブランチ名と同じになります。
+- **avatar_names**
 
-（例）：`{"main": "CatMaid"}`
+  任意、string
 
-##### includes
-任意、string
+  加工する対象のアバターの名前をJSON key-value形式で指定します。
+  キーをアバターのブランチ名に、値をアバター名にします。
+  省略するとアバター名はブランチ名と同じになります。
 
-必須ファイル/ディレクトリ以外にアバターに含めたいファイル/ディレクトリをJSON配列で指定します。
+  （例）：`{"main": "CatMaid"}`
 
-（例）：`["sounds", "avatar_2.png"]`
+- **includes**
+
+  任意、string
+
+  必須ファイル/ディレクトリ以外にアバターに含めたいファイル/ディレクトリをJSON配列で指定します。
+
+  （例）：`["sounds", "avatar_2.png"]`
 
 ### ワークフローの呼び出しについて
 これらのワークフローを自身のレポジトリで呼び出したい場合、`template_workflows/`内にあるワークフローファイルを自身のレポジトリの`.github/workflows/`に追加してください。
