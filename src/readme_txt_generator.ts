@@ -130,13 +130,6 @@ class ReadmeTxtGenerator {
                     this.Caches[`REPOSITORY_NAME_${fileLanguage}`] = this.RepositoryName;
                     break;
                 case "TAG_INFORMATION":
-                    switch(fileLanguage) {
-                        case "en":
-                            this.Caches[`TAG_INFORMATION_${fileLanguage}`] = `${this.TagName} (${this.releaseDate.getUTCMonth() + 1}/${this.releaseDate.getUTCDate()}/${this.releaseDate.getUTCFullYear()})`;
-                            break;
-                        case "jp":
-                            break;
-                    }
                     this.Caches[`TAG_INFORMATION_${fileLanguage}`] = `${this.TagName} (${fileLanguage == "en" ? `${this.releaseDate.getUTCMonth() + 1}/${this.releaseDate.getUTCDate()}/${this.releaseDate.getUTCFullYear()}` : `${this.releaseDate.getUTCFullYear()}/${this.releaseDate.getUTCMonth() + 1}/${this.releaseDate.getUTCDate()}`})${this.shouldShowBranchName ? ` - ${this.branchName}` : ""}`;
                     break;
                 case "AUTHOR":
@@ -151,7 +144,8 @@ class ReadmeTxtGenerator {
                         if(descriptionLineCount >= 1) text += `${line}\n`;
                         descriptionLineCount = descriptionLineCount >= 0 ? descriptionLineCount + 1 : -1;
                     });
-                    this.Caches[`DESCRIPTION_${fileLanguage}`] = this.replaceMarkdownTags(text).substring(0, text.length - 1);
+                    text = this.replaceMarkdownTags(text);
+                    this.Caches[`DESCRIPTION_${fileLanguage}`] = text.substring(0, text.length - 1);
                     break;
                 case "HOW_TO_USE":
                 case "NOTES":
