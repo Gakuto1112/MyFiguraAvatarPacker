@@ -1,0 +1,22 @@
+${REPOSITORY_NAME}
+${TAG_INFORMATION}
+
+Made by ${AUTHOR}
+
+
+★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★
+  If you like my avatar, please leave your STAR on the GitHub!
+☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆
+
+
+${DESCRIPTION}
+
+
+${HOW_TO_USE}
+
+
+${NOTES}
+
+
+Please read README at the link below for more information.
+${README_URL}
