@@ -17,16 +17,19 @@ on:
         type: string
         required: false
         default: '[]'
+      should_show_branch_name:
+        description: Whether branch names are shown in readme.txt or not
+        type: boolean
+        required: false
+        default: false
 
 jobs:
-  pack_figura_avatar:
-    name: Pack my Figura avatar
+  output_avatar_name:
+    name: Output avatar name
     runs-on: ubuntu-latest
+    outputs:
+      avatar_name: ${{ steps.output_avatar_name.outputs.avatar_name }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4.1.4
-        with:
-          ref: ${{ inputs.target_branch }}
       - name: Output avatar name
         id: output_avatar_name
         run: |
@@ -38,13 +41,71 @@ jobs:
         env:
           INPUT_NAME: ${{ inputs.avatar_name }}
           BRANCH_NAME: ${{ inputs.target_branch }}
+
+  generate_readme:
+    name: Generate readme.txt
+    needs:
+      - output_avatar_name
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout avatar repository
+        uses: actions/checkout@v4.1.7
+        with:
+          path: ./avatar
+          ref: ${{ inputs.target_branch }}
+      - name: Checkout generator repository
+        uses: actions/checkout@v4.1.7
+        with:
+          repository: Gakuto1112/FiguraAvatarsReadmeTemplate
+          path: ./generator
+      - name: Checkout packer repository
+        uses: actions/checkout@v4.1.7
+        with:
+          repository: Gakuto1112/MyFiguraAvatarPacker
+          path: ./packer
+      - name: Setup Node.js@20.12.0
+        uses: actions/setup-node@v4.0.3
+        with:
+          node-version: 20.12.0
+          cache: npm
+          cache-dependency-path: ./packer/package-lock.json
+      - name: Install dependencies
+        working-directory: ./packer
+        run: npm install
+      - name: Generate readme.txt
+        working-directory: ./packer/src
+        run: ../node_modules/.bin.ts-node ./readme_txt_generator.ts ${REPOSITORY_NAME} ${TAG_NAME} ${RELEASE_DATE} ${SHOULD_SHOW_BRANCH_NAME} ${BRANCH_NAME}
+        env:
+          REPOSITORY_NAME: ${{ github.repository }}
+          TAG_NAME: ${{ github.ref_name }}
+          RELEASE_DATE: ${{ github.event.release.created_at }}
+          SHOULD_SHOW_BRANCH_NAME: ${{ inputs.should_show_branch_name }}
+          BRANCH_NAME: ${{ needs.output_avatar_name.outputs.avatar_name }}
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: readme
+          path: ./out
+          retention-days: 1
+
+  pack_figura_avatar:
+    name: Pack my Figura avatar
+    needs:
+      - output_avatar_name
+      - generate_readme
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.7
+        with:
+          ref: ${{ inputs.target_branch }}
       - name: Prepare output directory
         run: |
           mkdir ./out
           mkdir ./out/${AVATAR_NAME}
           mkdir ./out/${AVATAR_NAME}/models
         env:
-          AVATAR_NAME: ${{ steps.output_avatar_name.outputs.avatar_name }}
+          AVATAR_NAME: ${{ needs.output_avatar_name.outputs.avatar_name }}
       - name: Remove reference images from model files
         run: |
           for model_file in $(ls -1 ./models | grep '.bbmodel')
@@ -52,7 +113,7 @@ jobs:
             cat ./models/${model_file} | jq 'del(.reference_images)' > ./out/${AVATAR_NAME}/models/${model_file}
           done
         env:
-          AVATAR_NAME: ${{ steps.output_avatar_name.outputs.avatar_name }}
+          AVATAR_NAME: ${{ needs.output_avatar_name.outputs.avatar_name }}
       - name: Move necessary files
         run: |
           mv ./scripts ./out/${AVATAR_NAME}/scripts
@@ -66,21 +127,19 @@ jobs:
             mv ./${path} ./out/${AVATAR_NAME}/${path}
           done
         env:
-          AVATAR_NAME: ${{ steps.output_avatar_name.outputs.avatar_name }}
+          AVATAR_NAME: ${{ needs.output_avatar_name.outputs.avatar_name }}
           INCLUDES: ${{ inputs.includes }}
-      - name: Create README.txt
+      - name: Download artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: readme
+          path: ./readmes
+      - name: Move readme
         run: |
-          cat << EOF > ./out/README.txt
-          Please read README at the link below for instructions and notes for the avatar.
-          https://github.com/${REPOSITORY}/blob/base/.github/README.md
-
-          アバターの使用方法や注意事項などは下記のリンクのREADMEをお読みください。
-          https://github.com/${REPOSITORY}/blob/base/.github/README_jp.md
-          EOF
-        env:
-          REPOSITORY: ${{ github.repository }}
+          mv ./readmes/README.txt ./out/README.txt
+          mv ./readmes/お読みください.txt ./out/お読みください.txt
       - name: Upload artifact
         uses: actions/upload-artifact@v4.3.3
         with:
-          name: avatar_${{ steps.output_avatar_name.outputs.avatar_name }}
+          name: avatar_${{ needs.output_avatar_name.outputs.avatar_name }}
           path: ./out

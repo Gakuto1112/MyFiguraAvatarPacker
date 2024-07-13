@@ -18,17 +18,17 @@ class ReadmeTxtGenerator {
     /**
      * GitHub上にあるReadmeを生成するためのテンプレートが置いてあるディレクトリまでのパス
      */
-    private readonly README_TEMPLATE_DIR: string = "../../FiguraAvatarsReadmeTemplate/templates";
+    private readonly README_TEMPLATE_DIR: string = "../../generator/templates";
 
     /**
      * レポジトリのReadmeがあるディレクトリまでのパス
      */
-    private readonly REPOSITORY_README_DIR: string = "C:/Users/gakut/AppData/Roaming/com.modrinth.theseus/profiles/Fabricバニラ/figura/avatars/ブルーアーカイブ/ベースアバター/.github";
+    private readonly REPOSITORY_README_DIR: string = "../../avatar/.github";
 
     /**
      * 生成したREADME.txtを出力するディレクトリ
      */
-    private readonly OUTPUT_DIR: string = "../out";
+    private readonly OUTPUT_DIR: string = "../../out";
 
     /**
      * レポジトリ名
@@ -70,7 +70,7 @@ class ReadmeTxtGenerator {
      * @param repositoryId レポジトリのID（<オーナー名>/<レポジトリ名>）
      * @param tagName リリースのタグ名
      * @param releaseDate タグのリリースが作成されたタイムスタンプ
-     * @param shouldShowBranchName タグ情報にブランチ名を記載するかどうか。`true`又は`false`が文字列で渡される。
+     * @param shouldShowBranchName タグ情報にブランチ名を記載するかどうか。`0`又は`1`が文字列で渡される。
      */
     constructor(repositoryId: string, tagName: string, releaseDate: string, shouldShowBranchName: string, branchName: string) {
         const idSprit: string[] = repositoryId.split("/");
@@ -79,7 +79,7 @@ class ReadmeTxtGenerator {
         this.TagName = tagName;
         this.releaseDate = new Date(releaseDate);
         this.releaseDate.setHours(this.releaseDate.getHours() + 9); //日本標準時（JST）に補正
-        this.shouldShowBranchName = shouldShowBranchName.length == 4;
+        this.shouldShowBranchName = Number(shouldShowBranchName) == 1;
         this.branchName = branchName;
     }
 
