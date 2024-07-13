@@ -41,6 +41,16 @@ class ReadmeTxtGenerator {
     }
 
     /**
+     * インジェクトタグ（${<tag_name>}）が見つかった時に呼ばれる関数
+     * @param tagName タグの名前
+     * @param fileLanguage READMEドキュメントの言語
+     * @returns タグに置き換わる文字列。返された文字列がREADMEに挿入される。
+     */
+    protected onInjectTagFound(tagName: string, fileLanguage: FileLanguage): string {
+        return `\${${tagName}}`;
+    }
+
+    /**
      * Readmeを生成する。
      * @param language Readmeが書かれている言語
      */
@@ -48,7 +58,14 @@ class ReadmeTxtGenerator {
         if(!fs.existsSync(this.OUTPUT_DIR)) fs.mkdirSync(this.OUTPUT_DIR);
         const writer: fs.WriteStream = fs.createWriteStream(`${this.OUTPUT_DIR}/${language == "en" ? "README" : "お読みください"}.txt`, {encoding: "utf-8"});
         await this.readFileWithStream(`${this.TEMPLATE_DIR}/${language}.txt`, (line: string): void => {
-            writer.write(`${line}\n`);
+            const injectTags: IterableIterator<RegExpMatchArray> = line.matchAll(/\${(.+)}/g);
+            let charCount: number = 0;
+            for(const injectTag of injectTags) {
+                writer.write(line.substring(charCount, injectTag.index));
+                charCount += injectTag.index! + injectTag[0].length;
+                writer.write(this.onInjectTagFound(injectTag[1], language));
+            }
+            writer.write(`${line.substring(charCount)}\n`);
         });
     }
 
