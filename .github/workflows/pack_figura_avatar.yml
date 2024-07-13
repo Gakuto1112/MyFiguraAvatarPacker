@@ -139,7 +139,7 @@ jobs:
           mv ./readmes/README.txt ./out/README.txt
           mv ./readmes/お読みください.txt ./out/お読みください.txt
       - name: Upload artifact
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v4.3.4
         with:
           name: avatar_${{ needs.output_avatar_name.outputs.avatar_name }}
           path: ./out

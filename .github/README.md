@@ -10,7 +10,7 @@
 
 - アバターを使用する上で不要なデータ（`.github/`など）を削除する。
   - `LICENSE`は含まれます。
-- レポジトリ上にあるREADMEを読むことを促す、簡易的な`README.txt`を生成する。
+- `README.txt`（英語版）及び`お読みください.txt`（日本語版）を生成する。
 - モデルファイル上にある参照画像（アバターを使用する上では一切必要ない）を削除し、配布ファイルのサイズを減らす。
 
 これらの加工は非破壊的であるため、レポジトリにあるアバターのデータが上書きされることはありません。
@@ -48,6 +48,13 @@ https://github.com/Gakuto1112/FiguraBlueArchiveCharacters/releases/tag/v1.8.6
   - ここに書かれていないファイル/ディレクトリが存在していも問題はないですが、これらは無視されます。
   ただし、ワークフロー追加の引数を指定することで追加のファイル/ディレクトリをアバターに含めることができます。
   - [こちらのテンプレート](https://github.com/Gakuto1112/FiguraAvatarTemplate)を使用すると、上記形式に従いやすくなります。
+- `README.md`及び`README_jp.md`内にアバターの説明文が記載されており、それらが`<!-- DESCRIPTION_START -->`と`<!-- DESCRIPTION_END -->`で囲まれている。
+
+  ```html
+  <!-- DESCRIPTION_START -->
+  アバターの説明です。このアバターを使用するとあなたのマインクラフトのプレイに少しの楽しみが生まれます。
+  <!-- DESCRIPTION_END -->
+  ```
 
 ## 加工済みアバターファイルについて
 ワークフローによって加工されたアバターファイルはアーティファクトとしてアップロードされます。
@@ -60,7 +67,8 @@ https://github.com/Gakuto1112/FiguraBlueArchiveCharacters/releases/tag/v1.8.6
 ├ アバターフォルダ/
 │ └ ...
 ├ LICENSE（レポジトリに含まれている場合のみ）
-└ README.txt
+├ README.txt
+└ お読みください.txt
 ```
 
 アバターフォルダをFiguraのアバターディレクトリ（`...\.minecraft\figura\avatars\`、環境によって異なります）に入れるとゲーム内でアバターを使用できるようになります。
@@ -97,6 +105,14 @@ https://github.com/Gakuto1112/FiguraBlueArchiveCharacters/releases/tag/v1.8.6
 
   （例）：`["sounds", "avatar_2.png"]`
 
+- **should_show_branch_name**
+
+  任意、boolean
+
+  `README.txt`及び`お読みください.txt`内にアバターのブランチ名を含めるかどうかです。
+  1つのレポジトリ内でブランチ毎に複数のアバターがある場合は`true`が推奨です。
+  デフォルトは`false`です。
+
 ### attach_avatars.yml
 リリースが作成された際にリリースのアセットに複数（又は単一）のアバターファイルを添付します。
 このワークフローは必ず`release`イベントでトリガーされた場合のみ呼び出してください。
@@ -128,6 +144,14 @@ https://github.com/Gakuto1112/FiguraBlueArchiveCharacters/releases/tag/v1.8.6
   必須ファイル/ディレクトリ以外にアバターに含めたいファイル/ディレクトリをJSON配列で指定します。
 
   （例）：`["sounds", "avatar_2.png"]`
+
+- **should_show_branch_name**
+
+  任意、boolean
+
+  `README.txt`及び`お読みください.txt`内にアバターのブランチ名を含めるかどうかです。
+  1つのレポジトリ内でブランチ毎に複数のアバターがある場合は`true`が推奨です。
+  デフォルトは`false`です。
 
 ### ワークフローの呼び出しについて
 これらのワークフローを自身のレポジトリで呼び出したい場合、`template_workflows/`内にあるワークフローファイルを自身のレポジトリの`.github/workflows/`に追加してください。

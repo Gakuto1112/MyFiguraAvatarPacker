@@ -17,6 +17,11 @@ on:
         type: string
         required: false
         default: '[]'
+      should_show_branch_name:
+        description: Whether branch names are shown in readme.txt or not
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   pack_figura_avatar:
@@ -29,6 +34,7 @@ jobs:
       target_branch: ${{ matrix.target_branch }}
       avatar_name: ${{ fromJSON(inputs.avatar_names)[format('{0}', matrix.target_branch)] }}
       includes: ${{ inputs.includes }}
+      should_show_branch_name: ${{ inputs.should_show_branch_name }}
   attach_avatar:
     name: Attach avatars to release assets
     needs: pack_figura_avatar
