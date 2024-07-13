@@ -41,19 +41,46 @@ class ReadmeTxtGenerator {
     private readonly OwnerName: string;
 
     /**
+     * リリースのタグ名
+     */
+    private readonly TagName: string;
+
+    /**
+     * タグのリリースが作成されたタイムスタンプ
+     */
+    private readonly releaseDate: Date;
+
+    /**
+     * ブランチ名
+     */
+    private readonly branchName: string;
+
+    /**
+     * タグ情報にブランチ名を記載するかどうか
+     */
+    private readonly shouldShowBranchName: boolean;
+
+    /**
      * fetchして入手したマークダウンのキャッシュ
      */
-    private readonly caches: {[key: string]: string} = {};
+    private readonly Caches: {[key: string]: string} = {};
 
     /**
      * コンストラクタ
      * @param repositoryId レポジトリのID（<オーナー名>/<レポジトリ名>）
+     * @param tagName リリースのタグ名
+     * @param releaseDate タグのリリースが作成されたタイムスタンプ
+     * @param shouldShowBranchName タグ情報にブランチ名を記載するかどうか。`true`又は`false`が文字列で渡される。
      */
-    constructor(repositoryId: string) {
-        console.log(repositoryId)
+    constructor(repositoryId: string, tagName: string, releaseDate: string, shouldShowBranchName: string, branchName: string) {
         const idSprit: string[] = repositoryId.split("/");
         this.OwnerName = idSprit[0];
         this.RepositoryName = idSprit[1];
+        this.TagName = tagName;
+        this.releaseDate = new Date(releaseDate);
+        this.releaseDate.setHours(this.releaseDate.getHours() + 9); //日本標準時（JST）に補正
+        this.shouldShowBranchName = shouldShowBranchName.length == 4;
+        this.branchName = branchName;
     }
 
     /**
@@ -97,13 +124,23 @@ class ReadmeTxtGenerator {
      * @returns タグに置き換わる文字列。返された文字列がREADMEに挿入される。
      */
     private async onInjectTagFound(tagName: string, fileLanguage: FileLanguage): Promise<string> {
-        if(this.caches[`${tagName}_${fileLanguage}`] == undefined) {
+        if(this.Caches[`${tagName}_${fileLanguage}`] == undefined) {
             switch(tagName) {
                 case "REPOSITORY_NAME":
-                    this.caches[`REPOSITORY_NAME_${fileLanguage}`] = this.RepositoryName;
+                    this.Caches[`REPOSITORY_NAME_${fileLanguage}`] = this.RepositoryName;
+                    break;
+                case "TAG_INFORMATION":
+                    switch(fileLanguage) {
+                        case "en":
+                            this.Caches[`TAG_INFORMATION_${fileLanguage}`] = `${this.TagName} (${this.releaseDate.getUTCMonth() + 1}/${this.releaseDate.getUTCDate()}/${this.releaseDate.getUTCFullYear()})`;
+                            break;
+                        case "jp":
+                            break;
+                    }
+                    this.Caches[`TAG_INFORMATION_${fileLanguage}`] = `${this.TagName} (${fileLanguage == "en" ? `${this.releaseDate.getUTCMonth() + 1}/${this.releaseDate.getUTCDate()}/${this.releaseDate.getUTCFullYear()}` : `${this.releaseDate.getUTCFullYear()}/${this.releaseDate.getUTCMonth() + 1}/${this.releaseDate.getUTCDate()}`})${this.shouldShowBranchName ? ` - ${this.branchName}` : ""}`;
                     break;
                 case "AUTHOR":
-                    this.caches[`AUTHOR_${fileLanguage}`] = this.OwnerName;
+                    this.Caches[`AUTHOR_${fileLanguage}`] = this.OwnerName;
                     break;
                 case "DESCRIPTION":
                     let text: string = "";
@@ -114,21 +151,21 @@ class ReadmeTxtGenerator {
                         if(descriptionLineCount >= 1) text += `${line}\n`;
                         descriptionLineCount = descriptionLineCount >= 0 ? descriptionLineCount + 1 : -1;
                     });
-                    this.caches[`DESCRIPTION_${fileLanguage}`] = this.replaceMarkdownTags(text).substring(0, text.length - 1);
+                    this.Caches[`DESCRIPTION_${fileLanguage}`] = this.replaceMarkdownTags(text).substring(0, text.length - 1);
                     break;
                 case "HOW_TO_USE":
                 case "NOTES":
-                    this.caches[`${tagName}_${fileLanguage}`] = await this.readReadmeTemplate(tagName.toLowerCase(), fileLanguage);
+                    this.Caches[`${tagName}_${fileLanguage}`] = await this.readReadmeTemplate(tagName.toLowerCase(), fileLanguage);
                     break;
                 case "README_URL":
-                    this.caches[`README_URL_${fileLanguage}`] = `https://github.com/${this.OwnerName}/${this.RepositoryName}/blob/base/.github/README${fileLanguage == "en" ? "" : "_jp"}.md`;
+                    this.Caches[`README_URL_${fileLanguage}`] = `https://github.com/${this.OwnerName}/${this.RepositoryName}/blob/base/.github/README${fileLanguage == "en" ? "" : "_jp"}.md`;
                     break;
                 default:
-                    this.caches[`${tagName}_${fileLanguage}`] = `\${${tagName}}`;
+                    this.Caches[`${tagName}_${fileLanguage}`] = `\${${tagName}}`;
                     break;
             }
         }
-        return this.caches[`${tagName}_${fileLanguage}`];
+        return this.Caches[`${tagName}_${fileLanguage}`];
     }
 
     /**
@@ -165,5 +202,5 @@ class ReadmeTxtGenerator {
 }
 
 if(require.main == module) {
-    new ReadmeTxtGenerator(process.argv[2]).main();
+    new ReadmeTxtGenerator(process.argv[2], process.argv[3], process.argv[4], process.argv[5], process.argv[6]).main();
 }
