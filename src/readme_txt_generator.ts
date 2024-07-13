@@ -79,7 +79,7 @@ class ReadmeTxtGenerator {
         this.TagName = tagName;
         this.releaseDate = new Date(releaseDate);
         this.releaseDate.setHours(this.releaseDate.getHours() + 9); //日本標準時（JST）に補正
-        this.shouldShowBranchName = Number(shouldShowBranchName) == 1;
+        this.shouldShowBranchName = shouldShowBranchName.length == 4;
         this.branchName = branchName;
     }
 
