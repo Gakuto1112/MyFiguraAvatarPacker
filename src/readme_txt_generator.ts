@@ -21,6 +21,11 @@ class ReadmeTxtGenerator {
     private readonly README_TEMPLATE_DIR: string = "../../FiguraAvatarsReadmeTemplate/templates";
 
     /**
+     * レポジトリのReadmeがあるディレクトリまでのパス
+     */
+    private readonly REPOSITORY_README_DIR: string = "C:/Users/gakut/AppData/Roaming/com.modrinth.theseus/profiles/Fabricバニラ/figura/avatars/ブルーアーカイブ/ベースアバター/.github";
+
+    /**
      * 生成したREADME.txtを出力するディレクトリ
      */
     private readonly OUTPUT_DIR: string = "../out";
@@ -63,6 +68,15 @@ class ReadmeTxtGenerator {
     }
 
     /**
+     * 不要なマークダウンタグを別のものに置き換える。
+     * @param input 置き換える対象のテキスト
+     * @returns マークダウンタグを置き換えた後のテキスト
+     */
+    private replaceMarkdownTags(input: string): string {
+        return input.replace(/\[([^\[\]\(\)]+)\]\([^\[\]\(\)]+\)/g, "$1").replace(/#{2}/g, "#").replace(/\*+/g, "").replace(/`/g, "\"");
+    }
+
+    /**
      * GitHubレポジトリのREADMEのテンプレート文書を読み込む
      * @param templateName 読み込むテンプレート名
      * @param fileLanguage READMEドキュメントの言語
@@ -71,7 +85,7 @@ class ReadmeTxtGenerator {
     private async readReadmeTemplate(templateName: string, fileLanguage: FileLanguage): Promise<string> {
         let text: string = "";
         await this.readFileWithStream(`${this.README_TEMPLATE_DIR}/${templateName}/${fileLanguage}.md`, (line: string) => {
-            text += `${line.replace(/\[([^\[\]\(\)]+)\]\([^\[\]\(\)]+\)/g, "$1").replace(/#{2}/g, "#").replace(/\*+/g, "").replace(/`/g, "\"")}\n`;
+            text += `${this.replaceMarkdownTags(line)}\n`;
         });
         return text.substring(0, text.length - 1);
     }
@@ -90,6 +104,17 @@ class ReadmeTxtGenerator {
                     break;
                 case "AUTHOR":
                     this.caches[`AUTHOR_${fileLanguage}`] = this.OwnerName;
+                    break;
+                case "DESCRIPTION":
+                    let text: string = "";
+                    let descriptionLineCount: number = -1;
+                    await this.readFileWithStream(`${this.REPOSITORY_README_DIR}/README${fileLanguage == "en" ? "" : "_jp"}.md`, (line: string) => {
+                        if(/<!--\sDESCRIPTION_START\s-->/.test(line)) descriptionLineCount = 0;
+                        else if(/<!--\sDESCRIPTION_END\s-->/.test(line)) descriptionLineCount = -1;
+                        if(descriptionLineCount >= 1) text += `${line}\n`;
+                        descriptionLineCount = descriptionLineCount >= 0 ? descriptionLineCount + 1 : -1;
+                    });
+                    this.caches[`DESCRIPTION_${fileLanguage}`] = this.replaceMarkdownTags(text).substring(0, text.length - 1);
                     break;
                 case "HOW_TO_USE":
                 case "NOTES":
