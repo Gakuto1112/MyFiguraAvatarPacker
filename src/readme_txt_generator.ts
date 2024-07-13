@@ -1,0 +1,68 @@
+import fs from "fs";
+import readline from "readline";
+
+/**
+ * READMEドキュメントの言語を示す列挙型
+ */
+export type FileLanguage = "en" | "jp";
+
+/**
+ * README.txtを生成するクラス
+ */
+class ReadmeTxtGenerator {
+    /**
+     * README.txtのテンプレートが置いてあるディレクトリまでのパス
+     */
+    private readonly TEMPLATE_DIR: string = "./templates";
+
+    /**
+     * GitHub上にあるReadmeを生成するためのテンプレートが置いてあるディレクトリまでのパス
+     */
+    private readonly README_TEMPLATE_DIR: string = "../../FiguraAvatarsReadmeTemplate/templates";
+
+    /**
+     * 生成したREADME.txtを出力するディレクトリ
+     */
+    private readonly OUTPUT_DIR: string = "../out";
+
+    /**
+     * テキストファイルをストリームで（1行ずつ）読む。
+     * @param filePath 読み込み対象のファイルパス
+     * @param onReadLine 1行ずつ読み込んだ際に呼ばれるコールバック関数
+     */
+    private async readFileWithStream(filePath: string, onReadLine: (line: string) => void): Promise<void> {
+        return new Promise((resolve: () => void) => {
+            const reader: readline.Interface = readline.createInterface({input: fs.createReadStream(filePath, {encoding: "utf-8"})});
+            reader.addListener("line", onReadLine);
+            reader.addListener("close", () => {
+                resolve();
+            });
+        });
+    }
+
+    /**
+     * Readmeを生成する。
+     * @param language Readmeが書かれている言語
+     */
+    private async generateReadme(language: FileLanguage): Promise<void> {
+        if(!fs.existsSync(this.OUTPUT_DIR)) fs.mkdirSync(this.OUTPUT_DIR);
+        const writer: fs.WriteStream = fs.createWriteStream(`${this.OUTPUT_DIR}/${language == "en" ? "README" : "お読みください"}.txt`, {encoding: "utf-8"});
+        await this.readFileWithStream(`${this.TEMPLATE_DIR}/${language}.txt`, (line: string): void => {
+            writer.write(`${line}\n`);
+        });
+    }
+
+    /**
+     * メイン関数
+     */
+    public async main(): Promise<void> {
+        console.info("Generating English readme...");
+        await this.generateReadme("en");
+        console.info("Generating Japanese readme...");
+        await this.generateReadme("jp");
+    }
+}
+
+if(require.main == module) {
+    new ReadmeTxtGenerator().main();
+}

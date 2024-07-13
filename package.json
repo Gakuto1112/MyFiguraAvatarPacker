@@ -1,0 +1,22 @@
+{
+  "name": "@gakuto1112/readme-txt-generator",
+  "version": "1.0.0",
+  "description": "A script to generate README.txt for my Figura avatars from templates.",
+  "keywords": [
+    "readme",
+    "generate",
+    "template"
+  ],
+  "author": "Gakuto1112",
+  "homepage": "https://github.com/Gakuto1112/MyFiguraAvatarPacker",
+  "bugs": {
+    "url": "https://github.com/Gakuto1112/MyFiguraAvatarPacker/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gakuto1112/MyFiguraAvatarPacker.git"
+  },
+  "dependencies": {
+    "ts-node": "^10.9.2"
+  }
+}
