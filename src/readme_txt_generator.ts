@@ -26,6 +26,32 @@ class ReadmeTxtGenerator {
     private readonly OUTPUT_DIR: string = "../out";
 
     /**
+     * レポジトリ名
+     */
+    private readonly RepositoryName: string;
+
+    /**
+     * レポジトリのオーナー名
+     */
+    private readonly OwnerName: string;
+
+    /**
+     * fetchして入手したマークダウンのキャッシュ
+     */
+    private readonly caches: {[key: string]: string} = {};
+
+    /**
+     * コンストラクタ
+     * @param repositoryId レポジトリのID（<オーナー名>/<レポジトリ名>）
+     */
+    constructor(repositoryId: string) {
+        console.log(repositoryId)
+        const idSprit: string[] = repositoryId.split("/");
+        this.OwnerName = idSprit[0];
+        this.RepositoryName = idSprit[1];
+    }
+
+    /**
      * テキストファイルをストリームで（1行ずつ）読む。
      * @param filePath 読み込み対象のファイルパス
      * @param onReadLine 1行ずつ読み込んだ際に呼ばれるコールバック関数
@@ -47,7 +73,16 @@ class ReadmeTxtGenerator {
      * @returns タグに置き換わる文字列。返された文字列がREADMEに挿入される。
      */
     protected onInjectTagFound(tagName: string, fileLanguage: FileLanguage): string {
-        return `\${${tagName}}`;
+        if(this.caches[`${tagName}_${fileLanguage}`] != undefined) return this.caches[`${tagName}_${fileLanguage}`];
+        else {
+            switch(tagName) {
+                case "REPOSITORY_NAME":
+                    this.caches[`REPOSITORY_NAME_${fileLanguage}`] = this.RepositoryName;
+                    return this.caches[`REPOSITORY_NAME_${fileLanguage}`];
+                default:
+                    return `\${${tagName}}`;
+            }
+        }
     }
 
     /**
@@ -58,11 +93,11 @@ class ReadmeTxtGenerator {
         if(!fs.existsSync(this.OUTPUT_DIR)) fs.mkdirSync(this.OUTPUT_DIR);
         const writer: fs.WriteStream = fs.createWriteStream(`${this.OUTPUT_DIR}/${language == "en" ? "README" : "お読みください"}.txt`, {encoding: "utf-8"});
         await this.readFileWithStream(`${this.TEMPLATE_DIR}/${language}.txt`, (line: string): void => {
-            const injectTags: IterableIterator<RegExpMatchArray> = line.matchAll(/\${(.+)}/g);
+            const injectTags: IterableIterator<RegExpMatchArray> = line.matchAll(/\${(\w+)}/g);
             let charCount: number = 0;
             for(const injectTag of injectTags) {
                 writer.write(line.substring(charCount, injectTag.index));
-                charCount += injectTag.index! + injectTag[0].length;
+                charCount = injectTag.index! + injectTag[0].length;
                 writer.write(this.onInjectTagFound(injectTag[1], language));
             }
             writer.write(`${line.substring(charCount)}\n`);
@@ -81,5 +116,5 @@ class ReadmeTxtGenerator {
 }
 
 if(require.main == module) {
-    new ReadmeTxtGenerator().main();
+    new ReadmeTxtGenerator(process.argv[2]).main();
 }
