@@ -18,5 +18,7 @@ ${HOW_TO_USE}
 ${NOTES}
 
 
-Please read README at the link below for more information.
-${README_URL}
+==============================================================
+  Please read README at the link below for more information.
+  ${README_URL}
+==============================================================
