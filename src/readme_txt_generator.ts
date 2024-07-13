@@ -73,16 +73,20 @@ class ReadmeTxtGenerator {
      * @returns タグに置き換わる文字列。返された文字列がREADMEに挿入される。
      */
     protected onInjectTagFound(tagName: string, fileLanguage: FileLanguage): string {
-        if(this.caches[`${tagName}_${fileLanguage}`] != undefined) return this.caches[`${tagName}_${fileLanguage}`];
-        else {
+        if(this.caches[`${tagName}_${fileLanguage}`] == undefined) {
             switch(tagName) {
                 case "REPOSITORY_NAME":
                     this.caches[`REPOSITORY_NAME_${fileLanguage}`] = this.RepositoryName;
-                    return this.caches[`REPOSITORY_NAME_${fileLanguage}`];
+                    break;
+                case "AUTHOR":
+                    this.caches[`AUTHOR_${fileLanguage}`] = this.OwnerName;
+                    break;
                 default:
-                    return `\${${tagName}}`;
+                    this.caches[`${tagName}_${fileLanguage}`] = `\${${tagName}}`;
+                    break;
             }
         }
+        return this.caches[`${tagName}_${fileLanguage}`];
     }
 
     /**
