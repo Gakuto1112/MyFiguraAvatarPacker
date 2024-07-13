@@ -95,6 +95,9 @@ class ReadmeTxtGenerator {
                 case "NOTES":
                     this.caches[`${tagName}_${fileLanguage}`] = await this.readReadmeTemplate(tagName.toLowerCase(), fileLanguage);
                     break;
+                case "README_URL":
+                    this.caches[`README_URL_${fileLanguage}`] = `https://github.com/${this.OwnerName}/${this.RepositoryName}/blob/base/.github/README${fileLanguage == "en" ? "" : "_jp"}.md`;
+                    break;
                 default:
                     this.caches[`${tagName}_${fileLanguage}`] = `\${${tagName}}`;
                     break;
