@@ -110,7 +110,7 @@ jobs:
         run: |
           for model_file in $(ls -1 ./models | grep '.bbmodel')
           do
-            cat ./models/${model_file} | jq 'del(.reference_images)' > ./out/${AVATAR_NAME}/models/${model_file}
+            cat ./models/${model_file} | jq 'del(.reference_images)' | jq '.textures[].path = ""' > ./out/${AVATAR_NAME}/models/${model_file}
           done
         env:
           AVATAR_NAME: ${{ needs.output_avatar_name.outputs.avatar_name }}
