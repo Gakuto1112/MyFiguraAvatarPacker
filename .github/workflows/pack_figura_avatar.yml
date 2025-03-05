@@ -146,7 +146,7 @@ jobs:
         run: |
           mkdir ./tmp
           sed "s/instance\.AVATAR_VERSION\s=\s\".*\"/instance.AVATAR_VERSION = \"${TAG_NAME}\"/g" ${UPDATE_CHECKER_PATH} > ./tmp/tmp1.lua
-          if ${SCRIPT_EXISTS}; then
+          if ${REPLACE_BRANCH_NAME}; then
             sed "s/instance\.BRANCH_NAME\s=\s\".*\"/instance.BRANCH_NAME = \"${AVATAR_NAME}\"/g" ./tmp/tmp1.lua > ./tmp/tmp2.lua
             rm ./tmp/tmp1.lua
             mv ./tmp/tmp2.lua ./tmp/tmp1.lua
@@ -157,7 +157,7 @@ jobs:
           TAG_NAME: ${{ github.ref_name }}
           AVATAR_NAME: ${{needs.output_avatar_name.outputs.avatar_name }}
           UPDATE_CHECKER_PATH: ${{ inputs.path_to_update_checker }}
-          SCRIPT_EXISTS: ${{ steps.update_script_check.outputs.exists }}
+          REPLACE_BRANCH_NAME: ${{ inputs.should_replace_branch_name }}
       - name: Move necessary files
         run: |
           mv ./scripts ./out/${AVATAR_NAME}/scripts
