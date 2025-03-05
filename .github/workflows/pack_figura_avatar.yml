@@ -152,7 +152,7 @@ jobs:
             mv ./tmp/tmp2.lua ./tmp/tmp1.lua
           fi
           rm ${UPDATE_CHECKER_PATH}
-          mv ./tmp/tmp1 ${UPDATE_CHECKER_PATH}
+          mv ./tmp/tmp1.lua ${UPDATE_CHECKER_PATH}
         env:
           TAG_NAME: ${{ github.ref_name }}
           AVATAR_NAME: ${{needs.output_avatar_name.outputs.avatar_name }}
