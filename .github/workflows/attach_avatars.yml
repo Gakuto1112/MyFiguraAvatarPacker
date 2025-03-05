@@ -22,6 +22,21 @@ on:
         type: boolean
         required: false
         default: false
+      update_checker_script_included:
+        description: Whether the target avatar has an update checker script
+        type: boolean
+        required: false
+        default: false
+      path_to_update_checker:
+        description: Path to the update checker script. Required if `update_checker_script_included` is true.
+        type: string
+        required: false
+        default: ''
+      should_replace_branch_name:
+        description: Whether the branche name field in the update checker script should be repleced to the target avatar's branch name
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   pack_figura_avatar:
@@ -35,6 +50,9 @@ jobs:
       avatar_name: ${{ fromJSON(inputs.avatar_names)[format('{0}', matrix.target_branch)] }}
       includes: ${{ inputs.includes }}
       should_show_branch_name: ${{ inputs.should_show_branch_name }}
+      update_checker_script_included: ${{ inputs.update_checker_script_included }}
+      path_to_update_checker: ${{ inputs.path_to_update_checker }}
+      should_replace_branch_name: ${{ inputs.should_replace_branch_name }}
   attach_avatar:
     name: Attach avatars to release assets
     needs: pack_figura_avatar

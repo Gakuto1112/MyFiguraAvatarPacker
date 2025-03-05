@@ -22,6 +22,21 @@ on:
         type: boolean
         required: false
         default: false
+      update_checker_script_included:
+        description: Whether the target avatar has an update checker script
+        type: boolean
+        required: false
+        default: false
+      path_to_update_checker:
+        description: Path to the update checker script. Required if `update_checker_script_included` is true.
+        type: string
+        required: false
+        default: ''
+      should_replace_branch_name:
+        description: Whether the branche name field in the update checker script should be repleced to the target avatar's branch name
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   output_avatar_name:
@@ -114,6 +129,35 @@ jobs:
           done
         env:
           AVATAR_NAME: ${{ needs.output_avatar_name.outputs.avatar_name }}
+      - name: Check if the update checker script exists
+        id: update_script_check
+        if: ${{ inputs.update_checker_script_included }}
+        run: |
+          if [ -e ${UPDATE_CHECKER_PATH} ]; then
+            echo 'exists=true' >> $GITHUB_OUTPUT
+          else
+            echo '[Warning]: Cannot find the update checker script. Placeholder replacements are skipped.'
+            echo 'exists=false' >> $GITHUB_OUTPUT
+          fi
+        env:
+          UPDATE_CHECKER_PATH: ${{ inputs.path_to_update_checker }}
+      - name: Replace update script placeholders
+        if: ${{ inputs.update_checker_script_included && steps.update_script_check.outputs.exists }}
+        run: |
+          mkdir ./tmp
+          sed "s/instance\.AVATAR_VERSION\s=\s\".*\"/instance.AVATAR_VERSION = \"${TAG_NAME}\"/g" ${UPDATE_CHECKER_PATH} > ./tmp/tmp1.lua
+          if ${SCRIPT_EXISTS}; then
+            sed "s/instance\.BRANCH_NAME\s=\s\".*\"/instance.BRANCH_NAME = \"${AVATAR_NAME}\"/g" ./tmp/tmp1.lua > ./tmp/tmp2.lua
+            rm ./tmp/tmp1.lua
+            mv ./tmp/tmp2.lua ./tmp/tmp1.lua
+          fi
+          rm ${UPDATE_CHECKER_PATH}
+          mv ./tmp/tmp1 ${UPDATE_CHECKER_PATH}
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+          AVATAR_NAME: ${{needs.output_avatar_name.outputs.avatar_name }}
+          UPDATE_CHECKER_PATH: ${{ inputs.path_to_update_checker }}
+          SCRIPT_EXISTS: ${{ steps.update_script_check.outputs.exists }}
       - name: Move necessary files
         run: |
           mv ./scripts ./out/${AVATAR_NAME}/scripts
