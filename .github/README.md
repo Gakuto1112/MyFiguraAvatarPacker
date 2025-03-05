@@ -113,6 +113,29 @@ https://github.com/Gakuto1112/FiguraBlueArchiveCharacters/releases/tag/v1.8.6
   1つのレポジトリ内でブランチ毎に複数のアバターがある場合は`true`が推奨です。
   デフォルトは`false`です。
 
+- **update_checker_script_included**
+
+  任意、boolean
+
+  アバターに[アップデートチェッカースクリプト](https://github.com/Gakuto1112/SenkoSan/blob/Senko/scripts/update_checker.lua)が含まれている場合、`true`にすることでスクリプト内のアバター名やブランチ名のプレースホルダーを自動で置き換えます。
+  なお、リンクされているスクリプト以外を使用する場合の動作は保障しません。
+  デフォルトは`false`です。
+
+- **path_to_update_checker**
+
+  任意、string
+
+  アバターに含まれるアップデートチェッカースクリプトまでのパスを指定します。
+  レポジトリのルートからの相対パスで指定してください。
+  `update_checker_script_included`が`true`の場合は必須です。
+
+- **should_replace_branch_name**
+
+  任意、boolean
+
+  アップデートチェッカースクリプト内のブランチ名のプレースホルダーを置き換える場合は`true`にします。
+  デフォルトは`false`です。
+
 ### attach_avatars.yml
 リリースが作成された際にリリースのアセットに複数（又は単一）のアバターファイルを添付します。
 このワークフローは必ず`release`イベントでトリガーされた場合のみ呼び出してください。
@@ -151,6 +174,29 @@ https://github.com/Gakuto1112/FiguraBlueArchiveCharacters/releases/tag/v1.8.6
 
   `README.txt`及び`お読みください.txt`内にアバターのブランチ名を含めるかどうかです。
   1つのレポジトリ内でブランチ毎に複数のアバターがある場合は`true`が推奨です。
+  デフォルトは`false`です。
+
+- **update_checker_script_included**
+
+  任意、boolean
+
+  アバターに[アップデートチェッカースクリプト](https://github.com/Gakuto1112/SenkoSan/blob/Senko/scripts/update_checker.lua)が含まれている場合、`true`にすることでスクリプト内のアバター名やブランチ名のプレースホルダーを自動で置き換えます。
+  なお、リンクされているスクリプト以外を使用する場合の動作は保障しません。
+  デフォルトは`false`です。
+
+- **path_to_update_checker**
+
+  任意、string
+
+  アバターに含まれるアップデートチェッカースクリプトまでのパスを指定します。
+  レポジトリのルートからの相対パスで指定してください。
+  `update_checker_script_included`が`true`の場合は必須です。
+
+- **should_replace_branch_name**
+
+  任意、boolean
+
+  アップデートチェッカースクリプト内のブランチ名のプレースホルダーを置き換える場合は`true`にします。
   デフォルトは`false`です。
 
 ### ワークフローの呼び出しについて
