@@ -180,7 +180,7 @@ https://github.com/Gakuto1112/FiguraBlueArchiveCharacters/releases/tag/v1.8.6
 
   任意、boolean
 
-  アバターに[アップデートチェッカースクリプト](https://github.com/Gakuto1112/SenkoSan/blob/Senko/scripts/update_checker.lua)が含まれている場合、`true`にすることでスクリプト内のアバター名やブランチ名のプレースホルダーを自動で置き換えます。
+  アバターに[アップデートチェッカースクリプト](https://github.com/Gakuto1112/ButterflyWings/blob/main/scripts/update_checker.lua)が含まれている場合、`true`にすることでスクリプト内のアバター名やブランチ名のプレースホルダーを自動で置き換えます。
   なお、リンクされているスクリプト以外を使用する場合の動作は保障しません。
   デフォルトは`false`です。
 
