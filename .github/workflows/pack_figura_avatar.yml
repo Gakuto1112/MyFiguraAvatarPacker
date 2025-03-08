@@ -173,6 +173,11 @@ jobs:
         env:
           AVATAR_NAME: ${{ needs.output_avatar_name.outputs.avatar_name }}
           INCLUDES: ${{ inputs.includes }}
+      - name: Compress textures
+        working-directory: ./out/${AVATAR_NAME}/textures
+        run: find . -name '*.png' -exec pngquant --speed 1 --ext .png --verbose --strip --force {} \;
+        env:
+          AVATAR_NAME: ${{ needs.output_avatar_name.outputs.avatar_name }}
       - name: Download artifacts
         uses: actions/download-artifact@v4.1.8
         with:
