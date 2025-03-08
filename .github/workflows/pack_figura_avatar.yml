@@ -178,6 +178,14 @@ jobs:
         run: find . -name '*.png' -exec pngquant --speed 1 --ext .png --verbose --strip --force {} \;
         env:
           AVATAR_NAME: ${{ needs.output_avatar_name.outputs.avatar_name }}
+      - name: Compress scripts
+        working-directory: ./out/${AVATAR_NAME}/scripts
+        run: |
+          for file in $(find . -name '*.lua'); do
+            cat ${file} | awk -f ~/src/remove_comments.awk > ${file}
+          done
+        env:
+          AVATAR_NAME: ${{ needs.output_avatar_name.outputs.avatar_name }}
       - name: Download artifacts
         uses: actions/download-artifact@v4.1.8
         with:
