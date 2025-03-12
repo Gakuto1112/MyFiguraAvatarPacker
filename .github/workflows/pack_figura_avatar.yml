@@ -145,14 +145,10 @@ jobs:
         if: ${{ inputs.update_checker_script_included && steps.update_script_check.outputs.exists }}
         run: |
           mkdir ./tmp
-          sed "s/instance\.AVATAR_VERSION\s=\s\".*\"/instance.AVATAR_VERSION = \"${TAG_NAME}\"/g" ${UPDATE_CHECKER_PATH} > ./tmp/tmp1.lua
+          sed -i -e "s/instance\.AVATAR_VERSION\s=\s\".*\"/instance.AVATAR_VERSION = \"${TAG_NAME}\"/g" ${UPDATE_CHECKER_PATH}
           if ${REPLACE_BRANCH_NAME}; then
-            sed "s/instance\.BRANCH_NAME\s=\s\".*\"/instance.BRANCH_NAME = \"${AVATAR_NAME}\"/g" ./tmp/tmp1.lua > ./tmp/tmp2.lua
-            rm ./tmp/tmp1.lua
-            mv ./tmp/tmp2.lua ./tmp/tmp1.lua
+            sed -i -e "s/instance\.BRANCH_NAME\s=\s\".*\"/instance.BRANCH_NAME = \"${AVATAR_NAME}\"/g" ${UPDATE_CHECKER_PATH}
           fi
-          rm ${UPDATE_CHECKER_PATH}
-          mv ./tmp/tmp1.lua ${UPDATE_CHECKER_PATH}
         env:
           TAG_NAME: ${{ github.ref_name }}
           AVATAR_NAME: ${{needs.output_avatar_name.outputs.avatar_name }}
