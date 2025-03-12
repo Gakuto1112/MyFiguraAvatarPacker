@@ -64,17 +64,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout avatar repository
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           path: ./avatar
           ref: ${{ inputs.target_branch }}
       - name: Checkout generator repository
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           repository: Gakuto1112/FiguraAvatarsReadmeTemplate
           path: ./generator
       - name: Checkout packer repository
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           repository: Gakuto1112/MyFiguraAvatarPacker
           path: ./packer
@@ -97,7 +97,7 @@ jobs:
           SHOULD_SHOW_BRANCH_NAME: ${{ inputs.should_show_branch_name }}
           BRANCH_NAME: ${{ needs.output_avatar_name.outputs.avatar_name }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.3.4
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: readme_${{ needs.output_avatar_name.outputs.avatar_name }}
           path: ./out
@@ -111,7 +111,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           ref: ${{ inputs.target_branch }}
       - name: Prepare output directory
@@ -170,7 +170,7 @@ jobs:
           AVATAR_NAME: ${{ needs.output_avatar_name.outputs.avatar_name }}
           INCLUDES: ${{ inputs.includes }}
       - name: Download artifacts
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.9
         with:
           name: readme_${{ needs.output_avatar_name.outputs.avatar_name }}
           path: ./readmes
@@ -179,7 +179,7 @@ jobs:
           mv ./readmes/README.txt ./out/README.txt
           mv ./readmes/お読みください.txt ./out/お読みください.txt
       - name: Upload artifact
-        uses: actions/upload-artifact@v4.3.4
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: avatar_${{ needs.output_avatar_name.outputs.avatar_name }}
           path: ./out
