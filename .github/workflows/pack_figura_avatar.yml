@@ -79,7 +79,7 @@ jobs:
           repository: Gakuto1112/MyFiguraAvatarPacker
           path: ./packer
       - name: Setup Node.js@20.12.0
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@v4.4.0
         with:
           node-version: 20.12.0
           cache: npm
@@ -97,7 +97,7 @@ jobs:
           SHOULD_SHOW_BRANCH_NAME: ${{ inputs.should_show_branch_name }}
           BRANCH_NAME: ${{ needs.output_avatar_name.outputs.avatar_name }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.6.1
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: readme_${{ needs.output_avatar_name.outputs.avatar_name }}
           path: ./out
@@ -170,7 +170,7 @@ jobs:
           AVATAR_NAME: ${{ needs.output_avatar_name.outputs.avatar_name }}
           INCLUDES: ${{ inputs.includes }}
       - name: Download artifacts
-        uses: actions/download-artifact@v4.1.9
+        uses: actions/download-artifact@v4.3.0
         with:
           name: readme_${{ needs.output_avatar_name.outputs.avatar_name }}
           path: ./readmes
@@ -179,7 +179,7 @@ jobs:
           mv ./readmes/README.txt ./out/README.txt
           mv ./readmes/お読みください.txt ./out/お読みください.txt
       - name: Upload artifact
-        uses: actions/upload-artifact@v4.6.1
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: avatar_${{ needs.output_avatar_name.outputs.avatar_name }}
           path: ./out
