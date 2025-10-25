@@ -23,7 +23,7 @@ class ReadmeTxtGenerator {
     /**
      * レポジトリのReadmeがあるディレクトリまでのパス
      */
-    private readonly REPOSITORY_README_DIR: string = "../../avatar/.github";
+    private readonly REPOSITORY_README_DIR: string = "../../avatar";
 
     /**
      * 生成したREADME.txtを出力するディレクトリ
